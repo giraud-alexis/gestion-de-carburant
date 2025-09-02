@@ -12,6 +12,19 @@ export function TrucksPage() {
     tankCapacity: 200
   });
 
+  // Force focus on modal inputs after render
+  React.useEffect(() => {
+    if (showForm) {
+      const timer = setTimeout(() => {
+        const firstInput = document.querySelector('input[type="text"]') as HTMLInputElement;
+        if (firstInput) {
+          firstInput.focus();
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [showForm]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addTruck({

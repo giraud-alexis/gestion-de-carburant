@@ -22,6 +22,19 @@ export function FuelPage() {
     notes: ''
   });
 
+  // Force focus on modal inputs after render
+  React.useEffect(() => {
+    if (showRefillForm || showConsumptionForm) {
+      const timer = setTimeout(() => {
+        const firstInput = document.querySelector('input[type="number"], select') as HTMLInputElement;
+        if (firstInput) {
+          firstInput.focus();
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [showRefillForm, showConsumptionForm]);
+
   const handleRefill = (e: React.FormEvent) => {
     e.preventDefault();
     const tank = fuelTanks.find(t => t.type === refillForm.fuelType);

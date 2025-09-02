@@ -25,6 +25,19 @@ export function Layout({ children, currentPage, onPageChange }: LayoutProps) {
   const [passwordError, setPasswordError] = useState("");
   const { logout, user } = useApp();
 
+  // Force focus on password input when modal opens
+  React.useEffect(() => {
+    if (showLogoutModal) {
+      const timer = setTimeout(() => {
+        const passwordInput = document.querySelector('input[type="password"]') as HTMLInputElement;
+        if (passwordInput) {
+          passwordInput.focus();
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [showLogoutModal]);
+
   const allNavigation = [
     { name: "Tableau de bord", icon: Home, id: "dashboard" },
     { name: "Pleins", icon: Fuel, id: "fuel" },
@@ -209,7 +222,6 @@ export function Layout({ children, currentPage, onPageChange }: LayoutProps) {
                   onKeyPress={handlePasswordKeyPress}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Entrez le mot de passe admin"
-                  autoFocus
                 />
                 {passwordError && (
                   <p className="text-red-600 text-sm mt-1">{passwordError}</p>

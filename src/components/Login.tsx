@@ -8,6 +8,17 @@ export function Login() {
   const [error, setError] = useState("");
   const { login } = useApp();
 
+  // Force focus on username input when component mounts
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      const usernameInput = document.querySelector('input[type="text"]') as HTMLInputElement;
+      if (usernameInput) {
+        usernameInput.focus();
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const success = login(username, password);
