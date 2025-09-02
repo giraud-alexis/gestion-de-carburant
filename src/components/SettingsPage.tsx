@@ -4,6 +4,7 @@ import { useApp } from '../contexts/AppContext';
 
 export function SettingsPage() {
   const { preventClose, setPreventClose, user, fuelTanks, updateTankCapacity } = useApp();
+  const [showSaveModal, setShowSaveModal] = useState(false);
   const [settings, setSettings] = useState({
     preventClose,
     lowStockAlert: 20,
@@ -18,6 +19,9 @@ export function SettingsPage() {
     return capacities;
   });
 
+  // Use custom hook for modal focus
+  useModalFocus(showSaveModal);
+
   const handleSave = () => {
     setPreventClose(settings.preventClose);
     
@@ -30,7 +34,11 @@ export function SettingsPage() {
     });
     
     // In a real app, you'd save other settings too
-    alert('Paramètres sauvegardés avec succès !');
+    setShowSaveModal(true);
+  };
+
+  const handleSaveConfirm = () => {
+    setShowSaveModal(false);
   };
 
   const handleExport = () => {
@@ -267,6 +275,32 @@ export function SettingsPage() {
           Sauvegarder les paramètres
         </button>
       </div>
+
+      {/* Save Confirmation Modal */}
+      {showSaveModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                <Save className="h-6 w-6 text-green-600" />
+              </div>
+              <h3 className="text-lg font-bold mb-2 text-gray-900">
+                Paramètres sauvegardés
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Vos paramètres ont été sauvegardés avec succès !
+              </p>
+              <button
+                type="button"
+                onClick={handleSaveConfirm}
+                className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
