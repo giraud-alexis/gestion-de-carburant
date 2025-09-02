@@ -22,12 +22,14 @@ interface LayoutProps {
 export function Layout({ children, currentPage, onPageChange }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showAdminLogoutModal, setShowAdminLogoutModal] = useState(false);
   const [adminPassword, setAdminPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const { logout, user } = useApp();
 
   // Use custom hook for modal focus
   useModalFocus(showLogoutModal, 'input[type="password"]');
+  useModalFocus(showAdminLogoutModal);
 
   const allNavigation = [
     { name: "Tableau de bord", icon: Home, id: "dashboard" },
@@ -51,11 +53,18 @@ export function Layout({ children, currentPage, onPageChange }: LayoutProps) {
       setAdminPassword("");
       setPasswordError("");
     } else {
-      // Pour les admins, confirmation simple
-      if (window.confirm("Êtes-vous sûr de vouloir vous déconnecter ?")) {
-        logout();
-      }
+      // Pour les admins, ouvrir la modal de confirmation
+      setShowAdminLogoutModal(true);
     }
+  };
+
+  const handleAdminLogout = () => {
+    setShowAdminLogoutModal(false);
+    logout();
+  };
+
+  const handleAdminLogoutCancel = () => {
+    setShowAdminLogoutModal(false);
   };
 
   const handleModalLogout = () => {
@@ -235,6 +244,37 @@ export function Layout({ children, currentPage, onPageChange }: LayoutProps) {
                   Se déconnecter
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Logout Confirmation Modal */}
+      {showAdminLogoutModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-bold mb-4 text-center">
+              Confirmation de Déconnexion
+            </h3>
+            <p className="text-gray-600 mb-6 text-center">
+              Êtes-vous sûr de vouloir vous déconnecter ?
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={handleAdminLogoutCancel}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleAdminLogout}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+              >
+                Se déconnecter
+              </button>
             </div>
           </div>
         </div>
