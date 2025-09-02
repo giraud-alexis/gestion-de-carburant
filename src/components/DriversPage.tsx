@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Plus, User, Calendar, CreditCard } from 'lucide-react';
+import { Plus, User, Calendar, CreditCard, Trash2 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { useModalFocus } from '../hooks/useModalFocus';
 
 export function DriversPage() {
-  const { drivers, addDriver } = useApp();
+  const { drivers, addDriver, deleteDriver } = useApp();
   const [showForm, setShowForm] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [driverToDelete, setDriverToDelete] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: '',
     license: ''
@@ -13,12 +15,31 @@ export function DriversPage() {
 
   // Use custom hook for modal focus
   useModalFocus(showForm);
+  useModalFocus(showDeleteModal);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addDriver(form);
     setForm({ name: '', license: '' });
     setShowForm(false);
+  };
+
+  const handleDeleteClick = (driverId: string) => {
+    setDriverToDelete(driverId);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (driverToDelete) {
+      deleteDriver(driverToDelete);
+      setDriverToDelete(null);
+    }
+    setShowDeleteModal(false);
+  };
+
+  const handleDeleteCancel = () => {
+    setDriverToDelete(null);
+    setShowDeleteModal(false);
   };
 
   return (
@@ -44,10 +65,17 @@ export function DriversPage() {
                 <div className="bg-blue-100 p-3 rounded-full mr-4">
                   <User className="h-8 w-8 text-blue-600" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <h3 className="text-xl font-bold text-gray-900">{driver.name}</h3>
                   <p className="text-gray-600">Chauffeur professionnel</p>
                 </div>
+                <button
+                  onClick={() => handleDeleteClick(driver.id)}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                  title="Supprimer le chauffeur"
+                >
+                  <Trash2 className="h-5 w-5" />
+                </button>
               </div>
               
               <div className="space-y-3">
@@ -130,6 +158,36 @@ export function DriversPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-bold mb-4 text-center">
+              Confirmer la suppression
+            </h3>
+            <p className="text-gray-600 mb-6 text-center">
+              Êtes-vous sûr de vouloir supprimer ce chauffeur ? Cette action est irréversible.
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={handleDeleteCancel}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteConfirm}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+              >
+                Supprimer
+              </button>
+            </div>
           </div>
         </div>
       )}
