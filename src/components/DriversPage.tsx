@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Plus, User, Calendar, CreditCard } from "lucide-react";
+import { Plus, User, Calendar, CreditCard, Trash2 } from "lucide-react";
 import { useApp } from "../contexts/AppContext";
 import { useModalFocus } from "../hooks/useModalFocus";
 
