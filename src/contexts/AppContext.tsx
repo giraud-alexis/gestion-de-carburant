@@ -18,6 +18,7 @@ interface AppContextType {
   addDriver: (driver: Omit<Driver, "id" | "createdAt">) => void;
   deleteDriver: (id: string) => void;
   addTruck: (truck: Omit<Truck, "id" | "createdAt">) => void;
+  deleteTruck: (id: string) => void;
   updateFuelTank: (id: string, updates: Partial<FuelTank>) => void;
   addTransaction: (transaction: Omit<FuelTransaction, "id">) => void;
 
@@ -109,6 +110,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       createdAt: new Date().toISOString(),
     };
     setTrucks((prev) => [...prev, newTruck]);
+  };
+
+  const deleteTruck = (id: string) => {
+    setTrucks((prev) => prev.filter(truck => truck.id !== id));
   };
 
   const updateFuelTank = (id: string, updates: Partial<FuelTank>) => {
@@ -207,6 +212,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     addDriver,
     deleteDriver,
     addTruck,
+    deleteTruck,
     updateFuelTank,
     addTransaction,
     updateTankCapacity,

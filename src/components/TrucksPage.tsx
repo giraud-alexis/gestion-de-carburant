@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Plus, Truck, Calendar, Fuel } from 'lucide-react';
+import { Plus, Truck, Calendar, Fuel, Trash2 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { useModalFocus } from '../hooks/useModalFocus';
 
 export function TrucksPage() {
-  const { trucks, addTruck } = useApp();
+  const { trucks, addTruck, deleteTruck } = useApp();
   const [showForm, setShowForm] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [truckToDelete, setTruckToDelete] = useState<string | null>(null);
   const [form, setForm] = useState({
     plateNumber: '',
     model: '',
@@ -15,6 +17,7 @@ export function TrucksPage() {
 
   // Use custom hook for modal focus
   useModalFocus(showForm);
+  useModalFocus(showDeleteModal);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +33,24 @@ export function TrucksPage() {
       tankCapacity: 200
     });
     setShowForm(false);
+  };
+
+  const handleDeleteClick = (truckId: string) => {
+    setTruckToDelete(truckId);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (truckToDelete) {
+      deleteTruck(truckToDelete);
+      setTruckToDelete(null);
+    }
+    setShowDeleteModal(false);
+  };
+
+  const handleDeleteCancel = () => {
+    setTruckToDelete(null);
+    setShowDeleteModal(false);
   };
 
   return (
@@ -51,7 +72,8 @@ export function TrucksPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {trucks.map((truck) => (
             <div key={truck.id} className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
-              <div className="flex items-center mb-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
                 <div className="bg-blue-100 p-3 rounded-full mr-4">
                   <Truck className="h-8 w-8 text-blue-600" />
                 </div>
@@ -59,6 +81,14 @@ export function TrucksPage() {
                   <h3 className="text-xl font-bold text-gray-900">{truck.plateNumber}</h3>
                   <p className="text-gray-600">{truck.model}</p>
                 </div>
+                </div>
+                <button
+                  onClick={() => handleDeleteClick(truck.id)}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                  title="Supprimer le camion"
+                >
+                  <Trash2 className="h-5 w-5" />
+                </button>
               </div>
               
               <div className="space-y-3">
@@ -175,6 +205,37 @@ export function TrucksPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-bold mb-4 text-center">
+              Confirmer la suppression
+            </h3>
+            <p className="text-gray-600 mb-6 text-center">
+              Êtes-vous sûr de vouloir supprimer ce camion ? Cette action est
+              irréversible.
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={handleDeleteCancel}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteConfirm}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+              >
+                Supprimer
+              </button>
+            </div>
           </div>
         </div>
       )}
