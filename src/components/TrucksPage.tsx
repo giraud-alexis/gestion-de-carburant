@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Truck, Calendar, Fuel } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
+import { useModalFocus } from '../hooks/useModalFocus';
 
 export function TrucksPage() {
   const { trucks, addTruck } = useApp();
@@ -12,18 +13,8 @@ export function TrucksPage() {
     tankCapacity: 200
   });
 
-  // Force focus on modal inputs after render
-  React.useEffect(() => {
-    if (showForm) {
-      const timer = setTimeout(() => {
-        const firstInput = document.querySelector('input[type="text"]') as HTMLInputElement;
-        if (firstInput) {
-          firstInput.focus();
-        }
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [showForm]);
+  // Use custom hook for modal focus
+  useModalFocus(showForm);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

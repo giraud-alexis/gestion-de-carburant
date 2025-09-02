@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Lock, Truck, User } from "lucide-react";
 import { useApp } from "../contexts/AppContext";
+import { useModalFocus } from "../hooks/useModalFocus";
 
 export function Login() {
   const [username, setUsername] = useState("");
@@ -8,16 +9,8 @@ export function Login() {
   const [error, setError] = useState("");
   const { login } = useApp();
 
-  // Force focus on username input when component mounts
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      const usernameInput = document.querySelector('input[type="text"]') as HTMLInputElement;
-      if (usernameInput) {
-        usernameInput.focus();
-      }
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
+  // Use custom hook for login focus
+  useModalFocus(true, 'input[type="text"]');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Fuel } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
+import { useModalFocus } from '../hooks/useModalFocus';
 
 export function FuelPage() {
   const { drivers, trucks, fuelTanks, addTransaction, user } = useApp();
@@ -22,18 +23,9 @@ export function FuelPage() {
     notes: ''
   });
 
-  // Force focus on modal inputs after render
-  React.useEffect(() => {
-    if (showRefillForm || showConsumptionForm) {
-      const timer = setTimeout(() => {
-        const firstInput = document.querySelector('input[type="number"], select') as HTMLInputElement;
-        if (firstInput) {
-          firstInput.focus();
-        }
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [showRefillForm, showConsumptionForm]);
+  // Use custom hooks for modal focus
+  useModalFocus(showRefillForm, 'select, input[type="number"]');
+  useModalFocus(showConsumptionForm, 'select, input[type="number"]');
 
   const handleRefill = (e: React.FormEvent) => {
     e.preventDefault();

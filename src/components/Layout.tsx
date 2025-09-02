@@ -11,6 +11,7 @@ import {
   Home,
 } from "lucide-react";
 import { useApp } from "../contexts/AppContext";
+import { useModalFocus } from "../hooks/useModalFocus";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -25,18 +26,8 @@ export function Layout({ children, currentPage, onPageChange }: LayoutProps) {
   const [passwordError, setPasswordError] = useState("");
   const { logout, user } = useApp();
 
-  // Force focus on password input when modal opens
-  React.useEffect(() => {
-    if (showLogoutModal) {
-      const timer = setTimeout(() => {
-        const passwordInput = document.querySelector('input[type="password"]') as HTMLInputElement;
-        if (passwordInput) {
-          passwordInput.focus();
-        }
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [showLogoutModal]);
+  // Use custom hook for modal focus
+  useModalFocus(showLogoutModal, 'input[type="password"]');
 
   const allNavigation = [
     { name: "Tableau de bord", icon: Home, id: "dashboard" },

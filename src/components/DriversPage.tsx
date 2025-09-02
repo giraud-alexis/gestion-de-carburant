@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, User, Calendar, CreditCard } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
+import { useModalFocus } from '../hooks/useModalFocus';
 
 export function DriversPage() {
   const { drivers, addDriver } = useApp();
@@ -10,18 +11,8 @@ export function DriversPage() {
     license: ''
   });
 
-  // Force focus on modal inputs after render
-  React.useEffect(() => {
-    if (showForm) {
-      const timer = setTimeout(() => {
-        const firstInput = document.querySelector('input[type="text"]') as HTMLInputElement;
-        if (firstInput) {
-          firstInput.focus();
-        }
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [showForm]);
+  // Use custom hook for modal focus
+  useModalFocus(showForm);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
