@@ -28,6 +28,10 @@ interface AppContextType {
   // Security
   preventClose: boolean;
   setPreventClose: (prevent: boolean) => void;
+
+  // Settings
+  lowStockAlert: number;
+  setLowStockAlert: (threshold: number) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -61,6 +65,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     []
   );
   const [preventClose, setPreventClose] = useState(true);
+  const [lowStockAlert, setLowStockAlert] = useLocalStorage<number>("lowStockAlert", 20);
 
   const login = (username: string, password: string): boolean => {
     // Simple authentication - in production, use proper authentication
@@ -218,6 +223,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     updateTankCapacity,
     preventClose,
     setPreventClose,
+    lowStockAlert,
+    setLowStockAlert,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

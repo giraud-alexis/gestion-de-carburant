@@ -3,11 +3,11 @@ import { Shield, Database, Bell, User, Save } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 
 export function SettingsPage() {
-  const { preventClose, setPreventClose, user, fuelTanks, updateTankCapacity } = useApp();
+  const { preventClose, setPreventClose, user, fuelTanks, updateTankCapacity, lowStockAlert, setLowStockAlert } = useApp();
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [settings, setSettings] = useState({
     preventClose,
-    lowStockAlert: 20,
+    lowStockAlert,
     notifications: true,
     autoBackup: true
   });
@@ -21,6 +21,7 @@ export function SettingsPage() {
 
   const handleSave = () => {
     setPreventClose(settings.preventClose);
+    setLowStockAlert(settings.lowStockAlert);
     
     // Update tank capacities
     Object.entries(tankCapacities).forEach(([tankId, capacity]) => {

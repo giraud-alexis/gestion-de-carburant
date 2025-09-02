@@ -3,7 +3,7 @@ import { Fuel, TrendingUp, TrendingDown, AlertTriangle } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 
 export function Dashboard() {
-  const { fuelTanks, transactions, drivers, trucks } = useApp();
+  const { fuelTanks, transactions, drivers, trucks, lowStockAlert } = useApp();
 
   const recentTransactions = transactions
     .slice(-5)
@@ -76,7 +76,7 @@ export function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {fuelTanks.map((tank) => {
           const percentage = (tank.currentLevel / tank.capacity) * 100;
-          const isLow = percentage < 20;
+          const isLow = percentage < lowStockAlert;
           
           return (
             <div key={tank.id} className="bg-white rounded-lg shadow p-6">

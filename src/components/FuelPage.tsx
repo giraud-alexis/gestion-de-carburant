@@ -4,7 +4,7 @@ import { useApp } from '../contexts/AppContext';
 import { useModalFocus } from '../hooks/useModalFocus';
 
 export function FuelPage() {
-  const { drivers, trucks, fuelTanks, addTransaction, user } = useApp();
+  const { drivers, trucks, fuelTanks, addTransaction, user, lowStockAlert } = useApp();
   const [showRefillForm, setShowRefillForm] = useState(false);
   const [showConsumptionForm, setShowConsumptionForm] = useState(false);
   
@@ -93,7 +93,7 @@ export function FuelPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {fuelTanks.map((tank) => {
           const percentage = (tank.currentLevel / tank.capacity) * 100;
-          const isLow = percentage < 20;
+          const isLow = percentage < lowStockAlert;
           
           return (
             <div key={tank.id} className="bg-white rounded-lg shadow-lg p-6">
