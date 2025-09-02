@@ -19,9 +19,6 @@ export function SettingsPage() {
     return capacities;
   });
 
-  // Use custom hook for modal focus
-  useModalFocus(showSaveModal);
-
   const handleSave = () => {
     setPreventClose(settings.preventClose);
     
