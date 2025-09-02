@@ -5,8 +5,8 @@ import { useApp } from '../contexts/AppContext';
 export function ReportsPage() {
   const { transactions, drivers, trucks, fuelTanks } = useApp();
   const [dateRange, setDateRange] = useState({
-    start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    end: new Date().toISOString().split('T')[0]
+    start: new Date().toISOString().split('T')[0],
+    end: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]
   });
 
   const filteredTransactions = transactions.filter(t => {
