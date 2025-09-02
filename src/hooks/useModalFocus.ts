@@ -57,3 +57,4 @@ export function useModalFocus(isOpen: boolean, selector: string = 'input[type="t
       // Pas de nettoyage nécessaire
     };
   }, [isOpen, selector]);
+}
